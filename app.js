@@ -1,5 +1,7 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
+app.use(cors())
 const routers = require('./src/router/index')
 const db = require('./src/config/configdb')
 require('dotenv').config()
@@ -15,7 +17,7 @@ db.connect()
          
     })
     .catch((e)=>{
-        console.log("can't reach port 8000")
+        console.log("can't reach port 8333")
 })
 
 

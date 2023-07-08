@@ -14,12 +14,21 @@ ctrl.getData = async (req, res) => {
     }
 }
 
+ctrl.getUser = async (req, res) => {
+    try{
+        const result = await models.SelectUser()
+        return res.status(200).json(result)
+    } catch (error) {
+        console.log("communication failed, check the route")
+    }
+}
+
 
 ctrl.saveData = async (req, res) => {
     try{
-        const hashPassword = await hash(req.body.password)
+        const hashPassword = await hash(req.body.post.password)
         const params = {
-            ...req.body,
+            ...req.body.post,
             password: hashPassword
         }
         const result = await models.addUser(params)

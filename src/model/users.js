@@ -26,11 +26,11 @@ model.getByUser = (username) => {
     })
 }
 
-model.addUser = ({ username, password, email, roles }) => {
+model.addUser = ({ password, email, first_name, last_name, phone}) => {
     return new Promise((resolve, reject) => {
         db.query(
-            `INSERT INTO public.users (username, "password", email, roles) VALUES($1, $2, $3, $4);`,
-            [username, password, email, roles]
+            `INSERT INTO public.users ("password", email, first_name, last_name, phone) VALUES($1, $2, $3, $4, $5);`,
+            [password, email, first_name, last_name, phone]
         )
             .then((res) => {
                 resolve(`${res.rowCount} user created`)

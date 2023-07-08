@@ -13,7 +13,18 @@ ctrl.getData = async (req, res) => {
         const result = await models.selectProduct(params)
         return response(res, 200, result)
     } catch (error) {
-        console.log(error)
+        return response(res, 500, error.message)
+    }
+}
+
+
+
+ctrl.getID = async (req, res) => {
+    try {
+        const movie_id = req.params.movie_id
+        const result = await models.getDataID(movie_id)
+        return response(res, 200, result)
+    } catch (error) {
         return response(res, 500, error.message)
     }
 }
@@ -33,8 +44,9 @@ ctrl.saveData = async (req, res) => {
 
 ctrl.updateData = async (req, res) => {
     try{
-        const {movie_id, date_released, genre_id} = req.body
-        const result = await models.updateProduct({movie_id, date_released, genre_id})
+        const {movie_id, title, synopsis, date_released, duration, director, casts, genre_id} = req.body.body
+        const result = await models.updateProduct({movie_id, title, synopsis, date_released, duration, director, casts, genre_id})
+        console.log(result)
         return res.status(200).json(result)
     } catch (error) {
         return response(res, 401, error.message)
@@ -45,6 +57,7 @@ ctrl.deleteData = async (req, res) => {
     try{
         const {movie_id} = req.body
         const result = await models.deleteProduct({movie_id})
+        console.log(req.body)
         return res.status(200).json(result)
     } catch (error) {
         return response(res, 401, error.message)

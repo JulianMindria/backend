@@ -5,7 +5,7 @@ model.selectGenre = async () => {
     return new Promise ((resolve, reject) => {
         db.query('SELECT * FROM public.genres ORDER BY id DESC')
         .then((res)=>{
-            resolve(res.rows)
+            resolve({data: res.rows})
         })
         .catch((er)=>{
             console.log("There is something wrong with your query")

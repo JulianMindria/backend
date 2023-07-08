@@ -6,8 +6,9 @@ const schedules = require('./schedule')
 const booking = require('./booking')
 const loginUser = require('./users')
 const auth = require('./auth')
+const upload = require('./upload')
 
-
+route.use('/upload', upload)
 route.use('/movie', movies)
 route.use('/genre', genres)
 route.use('/schedule', schedules)

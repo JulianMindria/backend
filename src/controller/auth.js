@@ -16,7 +16,7 @@ ctrl.Login = async (req, res) => {
         const check = await bcrypt.compare(passUser, passDb[0].password)
 
         if (check) {
-            const token = jwt.genToken(req.body.username)
+            const token = await jwt.genToken(req.body.username)
             return response(res, 200, {
                 message: 'token created',
                 token

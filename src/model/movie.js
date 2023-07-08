@@ -3,7 +3,7 @@ const db = require('../config/configdb')
 const concat = require('pg-format')
 
 
-model.selectProduct = async ({ page, limit, orderBy, search }) => {
+model.selectProduct = async ({ page, limit, orderBy, search}) => {
     try {
         let filterQuery = ''
         let orderQuery = ''
@@ -30,17 +30,15 @@ model.selectProduct = async ({ page, limit, orderBy, search }) => {
         const data = await db.query(`
             SELECT 
                 mv.movie_id,
+                mv.synopsis,
+                mv.movie_banner,
                 mv.title,
                 mv.casts,
+                mv.director,
+                mv.duration,
                 mv.date_released,
-                json_agg(
-                    JSONB_BUILD_OBJECT(
-                        'id', mg.id,
-                        'value', mg.list_genres 
-                    )
-                ) as genre
+                mv.genre_id
             FROM public.movies mv
-            JOIN public.genres mg ON mg.id = mv.movie_id
             WHERE true ${filterQuery}
             GROUP BY mv.movie_id
             ${orderQuery} ${metaQuery}
@@ -62,6 +60,17 @@ model.selectProduct = async ({ page, limit, orderBy, search }) => {
     }
 }
 
+model.getDataID = (movie_id) => {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT * FROM public.movies WHERE movie_id = $1', [movie_id])
+        .then((res)=>{
+            resolve({data: res.rows})
+        })
+        .catch((er)=>{
+            reject(er)
+        })
+    })
+}
 
 model.addProduct = async ({title, synopsis, date_released, duration, director, casts, genre_id, poster}) => {
     return new Promise ((resolve, reject) => {
@@ -79,10 +88,10 @@ model.addProduct = async ({title, synopsis, date_released, duration, director, c
     })
 }
 
-model.updateProduct = async ({movie_id, date_released, genre_id}) => {
+model.updateProduct = async ({movie_id, title, synopsis, date_released, duration, director, casts, genre_id}) => {
     return new Promise ((resolve, reject) => {
-        db.query(`UPDATE public.movies SET date_released = $1, genre_id = $2 WHERE movie_id = $3; `,
-            [date_released, genre_id, movie_id]
+        db.query(`UPDATE public.movies SET date_released = $1, genre_id = $2, title = $3, synopsis = $4, duration = $5, director = $6, casts = $7 WHERE movie_id = $8; `,
+            [date_released, genre_id, title, synopsis, duration, director, casts, movie_id]
             )
         .then((res)=>{
             resolve("operation running succesfully")
