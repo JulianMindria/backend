@@ -3,7 +3,7 @@ const route = express.Router()
 const ctrl = require('../controller/schedule')
 const check = require('../middleware/authcheck')
 
-route.get('/', check.userCheck, ctrl.getData)
+route.get('/', ctrl.getData)
 route.post('/', ctrl.saveData)
 route.patch('/', ctrl.updateData)
 route.delete('/', ctrl.deleteData)

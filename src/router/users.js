@@ -2,6 +2,7 @@ const express = require('express')
 const route = express.Router()
 const ctrl = require('../controller/users')
 const bodyparser = require('body-parser')
+const authcheck = require('../middleware/authcheck')
 
 route.get('/', ctrl.getData)
 route.get('/all', ctrl.getUser)

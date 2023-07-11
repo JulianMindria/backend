@@ -13,11 +13,11 @@ model.SelectUser = () => {
     })
 }
 
+
 model.getByUser = (username) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM public.users WHERE username = $1', [username])
+        db.query('SELECT user_id, username, email, password, roles FROM public.users WHERE username = $1', [username])
             .then((res) => {
-                console.log(res.rows)
                 resolve(res.rows)
             })
             .catch((er) => {
@@ -26,11 +26,11 @@ model.getByUser = (username) => {
     })
 }
 
-model.addUser = ({ password, email, first_name, last_name, phone}) => {
+model.addUser = ({ password, email, username, phone}) => {
     return new Promise((resolve, reject) => {
         db.query(
-            `INSERT INTO public.users ("password", email, first_name, last_name, phone) VALUES($1, $2, $3, $4, $5);`,
-            [password, email, first_name, last_name, phone]
+            `INSERT INTO public.users ("password", email, username, phone) VALUES($1, $2, $3, $4);`,
+            [password, email, username, phone]
         )
             .then((res) => {
                 resolve(`${res.rowCount} user created`)

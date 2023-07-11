@@ -3,15 +3,16 @@ const db = require('../config/configdb')
 const concat = require('pg-format')
 
 
-model.selectProduct = async ({ page, limit, orderBy, search}) => {
+model.selectProduct = async ({ page, limit, orderBy, search,genre}) => {
     try {
         let filterQuery = ''
         let orderQuery = ''
         let metaQuery = ''
         let count = 0
 
-        if (search) {
-            filterQuery += concat('AND title = %L', search)
+        if (search || genre) {
+            filterQuery += search ? concat('AND title = %L', search) : ''
+            filterQuery += genre ? concat('AND genre_id LIKE %$1%', genre) : ''
         }
 
         if (orderBy) {

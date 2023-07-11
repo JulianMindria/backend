@@ -1,43 +1,36 @@
-const check = {}
-const respon = require('../helper/respon')
+const respone = require('../helper/respon')
 const jwt = require('jsonwebtoken')
 
-check.userCheck = (req, res, next) => {
-    const { authorization } = req.headers
+const authCheck = (...roles) => {
+    return (req, res, next) => {
+        const { authorization } = req.headers
+        let isValid = false
 
-    if (!authorization) {
-        return respon (res, 401, 'You need to login first')
-    }
+        if (!authorization) {
+            return respone(res, 401, 'silahkan login terlebih dahulu')
+        }
 
-    const token = authorization.replace('Bearer ', '')
-    
-    jwt.verify(token, process.env.USER_KEY, (err, decode) => {
+        const token = authorization.replace('Bearer ', '')
+        jwt.verify(token, process.env.SECRET, (err, decode) => {
             if (err) {
-                return respon (res, 401, err)
+                return respone(res, 401, err)
             }
-            console.log(decode)
-            req.user = decode.data
-            return next()
-    } )
+
+            roles.forEach((v) => {
+                if (v == decode.role) {
+                    isValid = true
+                    return
+                }
+            })
+
+            if (isValid) {
+                req.user = decode.data
+                return next()
+            } else {
+                return respone(res, 401, 'anda tidak punya akases')
+            }
+        })
+    }
 }
 
-check.adminCheck = (req, res, next) => {
-    const { authorization } = req.headers
-
-    if (!authorization) {
-        return respon (res, 401, 'You need to login first')
-    }
-
-    const token = authorization.replace('Bearer ', '')
-    
-    jwt.verify(token, process.env.ADMIN_KEY, (err, decode) => {
-            if (err) {
-                return respon (res, 401, err)
-            }
-            console.log(decode)
-            req.user = decode.data
-            return next()
-    } )
-}
-
-module.exports = check
+module.exports = authCheck

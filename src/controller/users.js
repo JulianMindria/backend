@@ -5,8 +5,7 @@ const hash = require('../helper/hash')
 
 ctrl.getData = async (req, res) => {
     try {
-        const result = await models.getByUser(req.query.username)
-        console.log(result)
+        const result = await models.getByUser(req.user)
         return response(res, 200, result)
     } catch (error) {
         console.log(error)
@@ -17,7 +16,7 @@ ctrl.getData = async (req, res) => {
 ctrl.getUser = async (req, res) => {
     try{
         const result = await models.SelectUser()
-        return res.status(200).json(result)
+        return response(res, 200, result)
     } catch (error) {
         console.log("communication failed, check the route")
     }
@@ -26,9 +25,9 @@ ctrl.getUser = async (req, res) => {
 
 ctrl.saveData = async (req, res) => {
     try{
-        const hashPassword = await hash(req.body.post.password)
+        const hashPassword = await hash(req.body.password)
         const params = {
-            ...req.body.post,
+            ...req.body,
             password: hashPassword
         }
         const result = await models.addUser(params)
