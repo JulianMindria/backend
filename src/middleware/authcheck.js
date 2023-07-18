@@ -1,4 +1,4 @@
-const respone = require('../helper/respon')
+const response = require('../helper/respon')
 const jwt = require('jsonwebtoken')
 
 const authCheck = (...roles) => {
@@ -7,13 +7,13 @@ const authCheck = (...roles) => {
         let isValid = false
 
         if (!authorization) {
-            return respone(res, 401, 'silahkan login terlebih dahulu')
+            return response(res, 401, 'silahkan login terlebih dahulu')
         }
 
         const token = authorization.replace('Bearer ', '')
         jwt.verify(token, process.env.SECRET, (err, decode) => {
             if (err) {
-                return respone(res, 401, err)
+                return response(res, 401, err)
             }
 
             roles.forEach((v) => {
@@ -23,11 +23,12 @@ const authCheck = (...roles) => {
                 }
             })
 
+
             if (isValid) {
                 req.user = decode.data
                 return next()
             } else {
-                return respone(res, 401, 'anda tidak punya akases')
+                return response(res, 401, 'anda tidak punya akses')
             }
         })
     }

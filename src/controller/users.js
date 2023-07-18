@@ -6,6 +6,7 @@ const hash = require('../helper/hash')
 ctrl.getData = async (req, res) => {
     try {
         const result = await models.getByUser(req.user)
+        console.log(result)
         return response(res, 200, result)
     } catch (error) {
         console.log(error)
@@ -41,8 +42,9 @@ ctrl.saveData = async (req, res) => {
 
 ctrl.updateData = async (req, res) => {
     try{
-        const {username, password, email, user_id} = req.body
-        const result = await models.updateUser({username, password, email, user_id})
+        const {username, phone, email, roles, user_id} = req.body
+        console.log(req.body)
+        const result = await models.updateUser({username, phone, roles, email, user_id})
         return res.status(200).json(result)
     } catch (error) {
         console.log("communication failed, check the database models")

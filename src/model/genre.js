@@ -3,7 +3,7 @@ const db = require('../config/configdb')
 
 model.selectGenre = async () => {
     return new Promise ((resolve, reject) => {
-        db.query('SELECT * FROM public.genres ORDER BY id DESC')
+        db.query('SELECT * FROM public.genres ORDER BY genre_id ASC')
         .then((res)=>{
             resolve({data: res.rows})
         })

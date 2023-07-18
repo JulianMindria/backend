@@ -16,7 +16,7 @@ model.SelectUser = () => {
 
 model.getByUser = (username) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT user_id, username, email, password, roles FROM public.users WHERE username = $1', [username])
+        db.query('SELECT * FROM public.users WHERE username = $1', [username])
             .then((res) => {
                 resolve(res.rows)
             })
@@ -29,7 +29,7 @@ model.getByUser = (username) => {
 model.addUser = ({ password, email, username, phone}) => {
     return new Promise((resolve, reject) => {
         db.query(
-            `INSERT INTO public.users ("password", email, username, phone) VALUES($1, $2, $3, $4);`,
+            `INSERT INTO public.users (password, email, username, phone) VALUES($1, $2, $3, $4);`,
             [password, email, username, phone]
         )
             .then((res) => {
@@ -41,22 +41,24 @@ model.addUser = ({ password, email, username, phone}) => {
     })
 }
 
-model.updateUser = async ({username, password, email, user_id}) => {
+model.updateUser = async ({username, phone, email, roles, user_id}) => {
+    console.log(username)
     return new Promise ((resolve, reject) => {
         db.query(`UPDATE public.users SET
                 username = COALESCE(NULLIF($1, ''), username),
-                password = COALESCE(NULLIF($2, ''), password),
+                phone = COALESCE(NULLIF($2, ''), phone),
                 email = COALESCE(NULLIF($3, ''), email),
+                roles  = COALESCE(NULLIF($4, ''), roles),
                 updated_at = now()
-                WHERE user_id = $4           
+                WHERE user_id = $5           
 `,
-            [username, password, email, user_id]
+            [username, phone, email, roles, user_id]
             )
         .then((res)=>{
             resolve(res.rows)
         })
         .catch((er)=>{
-            console.log("There is something wrong with your query")
+            console.log(er)
             reject("unexpected output")
         })
 
